@@ -11,20 +11,16 @@ using namespace std;
 
 const int ARRAY_SIZE = 1000;
 
-void swap(int& a, int &b)
-{
-	int temp = a;
-	a = b;
-	b = temp;
-}
-int mainMenu();
-void fillArray(int* , int );
-void printArray(int* , int );
+void swap(int& , int &);
+int mainMenu();				   //menu selection to choose the required algorithms
+void fillArray(int* , int );   //fills the given array with random numbers
+void printArray(int* , int );  //print the given array
 void BubbleSort(int* ,int );
 void QuickSort(int* , int ,int );
 int LinarySearch(int* ,int ,int );
 int BinarySearch(int* ,int, int);
 void HanoiTower(int ,char ,char ,char );
+int partition(int*, int, int);  //part of the quick sort algorithm
 
 int main()
 {
@@ -33,18 +29,19 @@ int main()
 		clock_t start, end;
 		int testList[ARRAY_SIZE];
 		int choice = mainMenu();
+		int key , answer;         //key to search for in binary & linary algorithms, answer = position of the key
 		switch (choice)
 		{
 		case 1:
 			//BubbleSort();
-			system("cls");
+			system("cls");						//windows command to clear the screen
 			fillArray(testList, ARRAY_SIZE);
 			//printArray(testList, ARRAY_SIZE);
 			start = clock();
 			BubbleSort(testList, ARRAY_SIZE);
 			end = clock();
 			//printArray(testList, ARRAY_SIZE);
-			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
+			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;   //shows the CPU time spend for the algorithm in seconds
 			cin.get();
 			cin.get();
 			break;
@@ -64,12 +61,11 @@ int main()
 			break;
 		case 3:
 			//LinarySearch();
-			int key, answer;
 			fillArray(testList, ARRAY_SIZE);
 			//printArray(testList, ARRAY_SIZE);
-			srand(time(0));
-			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
-			BubbleSort(testList, ARRAY_SIZE);
+			srand((unsigned int)time(0));
+			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];		//random generated key
+			BubbleSort(testList, ARRAY_SIZE);									//sorts the array before searching
 			start = clock();
 			answer = LinarySearch(testList, ARRAY_SIZE, key);
 			end = clock();
@@ -83,12 +79,11 @@ int main()
 			break;
 		case 4:
 			//BinarySearch();
-			int key, answer;
 			fillArray(testList, ARRAY_SIZE);
 			//printArray(testList, ARRAY_SIZE);
-			srand(time(0));
-			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
-			BubbleSort(testList, ARRAY_SIZE);
+			srand((unsigned int)time(0));
+			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];		//random generated key
+			BubbleSort(testList, ARRAY_SIZE);									//sorts the array before searching
 			start = clock();
 			answer = BinarySearch(testList, key, ARRAY_SIZE);
 			end = clock();
@@ -101,6 +96,7 @@ int main()
 			cin.get();
 			break;
 		case 5:
+			//HanoiTower();
 			system("cls");
 			int num;
 			cout << "Enter the number of disks : ";
@@ -120,7 +116,12 @@ int main()
 		}
 	} while (true);
 }
-
+void swap(int& a, int &b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
 int mainMenu()
 {
 	system("cls");
@@ -155,6 +156,20 @@ void printArray(int* array, int size)
 	for (int i = 0;i < size;i++)
 		cout << array[i] << endl;
 }
+int partition(int* array, int low, int high)
+{
+	int pivot = array[high], i = (low - 1) ,j;
+	for (j = low; j <= high - 1; j++)
+	{
+		if (array[j] <= pivot)
+		{
+			i++;
+			swap(array[i], array[j]);
+		}
+	}
+	swap(array[i], array[j]);
+	return (i + 1);
+}
 void BubbleSort(int* array, int size)
 {
 	for (int i = 0; i < size ;i++)       
@@ -170,18 +185,15 @@ void BubbleSort(int* array, int size)
 		}
 	}
 }
-/*void QuickSort(int* array, int startIndex, int endIndex)
+void QuickSort(int* array, int startIndex, int endIndex)
 {
-	int pivot = array[startIndex];
-	int splitPoint;
-	if (endIndex > startIndex)
+	if (startIndex > endIndex)
 	{
-		splitPoint = SplitArray(array, pivot, startIndex, endIndex);
-		array[splitPoint] = pivot;
+		int splitPoint = partition(array, startIndex, endIndex);
 		QuickSort(array, startIndex, splitPoint - 1);
 		QuickSort(array, splitPoint + 1, endIndex);
 	}
-}*/
+}
 int LinarySearch(int* array,int size,int key) 
 {
 	short flag;
