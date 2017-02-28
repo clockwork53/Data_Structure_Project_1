@@ -6,9 +6,11 @@
 #include <iomanip>
 #include <Windows.h>
 #include <cstdlib>
-#define ARRAY_SIZE 1000
 
 using namespace std;
+
+const int ARRAY_SIZE = 1000;
+
 void swap(int& a, int &b)
 {
 	int temp = a;
@@ -16,79 +18,107 @@ void swap(int& a, int &b)
 	b = temp;
 }
 int mainMenu();
-void fillArray(int a[], int x);
-void printArray(int a[], int x);
-void BubbleSort(int* array,int x);
-void QuickSort(int* array, int startIndex, int endIndex);
-void LinarySearch();
-void BinarySearch();
+void fillArray(int* , int );
+void printArray(int* , int );
+void BubbleSort(int* ,int );
+void QuickSort(int* , int ,int );
+int LinarySearch(int* ,int ,int );
+int BinarySearch(int* ,int, int);
 void HanoiTower(int ,char ,char ,char );
 
 int main()
 {
-	clock_t start, end;
-	int a[ARRAY_SIZE];
-	int c = mainMenu();
-	switch (c)
+	do
 	{
-	case 1:
-		system("cls");
-		fillArray(a, ARRAY_SIZE);
-		//printArray(a, ARRAY_SIZE);
-		start = clock();
-		BubbleSort(a,ARRAY_SIZE);
-		end = clock();
-		//printArray(a, ARRAY_SIZE);
-		cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
-		cin.get();
-		cin.get();
-		break;
-	case 2:
-		system("cls");
-		for (int i = 0; i < ARRAY_SIZE; i++)
+		clock_t start, end;
+		int testList[ARRAY_SIZE];
+		int choice = mainMenu();
+		switch (choice)
 		{
-			cout << "Enter an integer : ";
-			cin >> a[i];
+		case 1:
+			//BubbleSort();
+			system("cls");
+			fillArray(testList, ARRAY_SIZE);
+			//printArray(testList, ARRAY_SIZE);
+			start = clock();
+			BubbleSort(testList, ARRAY_SIZE);
+			end = clock();
+			//printArray(testList, ARRAY_SIZE);
+			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
+			cin.get();
+			cin.get();
+			break;
+		case 2:
+			//QuickSort();
+			system("cls");
+			fillArray(testList, ARRAY_SIZE);
+			//printArray(testList, ARRAY_SIZE);
+			start = clock();
+			QuickSort(testList, 0, ARRAY_SIZE - 1);
+			end = clock();
+			cout << endl << "The list has been sorted, now it is : " << endl;
+			//printArray(testList, ARRAY_SIZE);
+			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
+			cin.get();
+			cin.get();
+			break;
+		case 3:
+			//LinarySearch();
+			int key, answer;
+			fillArray(testList, ARRAY_SIZE);
+			//printArray(testList, ARRAY_SIZE);
+			srand(time(0));
+			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
+			BubbleSort(testList, ARRAY_SIZE);
+			start = clock();
+			answer = LinarySearch(testList, ARRAY_SIZE, key);
+			end = clock();
+			/*if (answer == 0)
+				cout << " Element is not found in an array\n";
+			else
+				cout << " Element is found at position " << (answer + 1) << endl;*/
+			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
+			cin.get();
+			cin.get();
+			break;
+		case 4:
+			//BinarySearch();
+			int key, answer;
+			fillArray(testList, ARRAY_SIZE);
+			//printArray(testList, ARRAY_SIZE);
+			srand(time(0));
+			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
+			BubbleSort(testList, ARRAY_SIZE);
+			start = clock();
+			answer = BinarySearch(testList, key, ARRAY_SIZE);
+			end = clock();
+			/*if (answer == 0)
+			cout << " Element is not found in an array\n";
+			else
+			cout << " Element is found at position " << (answer + 1) << endl;*/
+			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
+			cin.get();
+			cin.get();
+			break;
+		case 5:
+			system("cls");
+			int num;
+			cout << "Enter the number of disks : ";
+			cin >> num;
+			cout << "The sequence of moves involved in the Tower of Hanoi are :\n";
+			start = clock();
+			HanoiTower(num, 'A', 'B', 'C');
+			end = clock();
+			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
+			cin.get();
+			cin.get();
+			break;
+		case 6:
+			return 0;
+		default:
+			break;
 		}
-		cout << endl << "The list you input is : " << endl;
-		printArray(a, ARRAY_SIZE);
-		start = clock();
-		QuickSort(a, 0, ARRAY_SIZE - 1);
-		end = clock();
-		cout << endl << "The list has been sorted, now it is : " << endl;
-		printArray(a, ARRAY_SIZE);
-		cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
-		cin.get();
-		cin.get();
-		system("cls");
-		break;
-	case 3:
-		//LinarySearch();
-		break;
-	case 4:
-		//BinarySearch();
-		break;
-	case 5:
-		system("cls");
-		int num;
-		cout << "Enter the number of disks : ";
-		cin >> num;
-		cout << "The sequence of moves involved in the Tower of Hanoi are :\n";
-		start = clock();
-		HanoiTower(num,'A', 'B', 'C');
-		end = clock();
-		cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
-		cin.get();
-		cin.get();
-		system("cls");
-		break;
-	case 6:
-		return 0;
-	default:
-		break;
-	}
-
-    return 0;
+	} while (true);
 }
 
 int mainMenu()
@@ -112,18 +142,18 @@ int mainMenu()
 	} while (x < 1 || x>6);
 	return x;
 }
-void fillArray(int a[], int x)
+void fillArray(int* array, int size)
 {
 	srand(time(0));
-	for (int i = 0;i < x;i++)
+	for (int i = 0;i < size;i++)
 	{
-		a[i] = rand() % 5000;
+		array[i] = rand() % 5000;
 	}
 }
-void printArray(int a[], int x)
+void printArray(int* array, int size)
 {
-	for (int i = 0;i < x;i++)
-		cout << a[i] << endl;
+	for (int i = 0;i < size;i++)
+		cout << array[i] << endl;
 }
 void BubbleSort(int* array, int size)
 {
@@ -152,16 +182,39 @@ void BubbleSort(int* array, int size)
 		QuickSort(array, splitPoint + 1, endIndex);
 	}
 }*/
-void BinarySearch(int arr[], int size)
+int LinarySearch(int* array,int size,int key) 
 {
-	int low = 0;
-	int high = size-1;
+	short flag;
+	int i;
+	for (i = 0; i < size; i++)
+	{
+		if (array[i] == key)
+		{
+			flag = 1;
+			break;
+		}
+	}
+	if (flag == 0)
+		return -1;
+	else
+	{
+		return i;
+	}
+}
+int BinarySearch(int* array, int key, int size)
+{
+	int low = 0, mid, high = size-1;
 	while (low <= high)
 	{
-		
+		mid = (low + high) / 2;
+		if (key == array[mid])
+			return mid;
+		else if (key < array[mid])
+			high = mid - 1;
+		else
+			low = mid + 1;
 	}
-	
-
+	return -1;
 }
 void HanoiTower(int num, char frompeg, char topeg, char auxpeg)
 {
