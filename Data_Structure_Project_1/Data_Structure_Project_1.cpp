@@ -5,26 +5,24 @@
 #include <time.h>
 #include <iomanip>
 #include <Windows.h>
-#include <cstdlib>
+#include <utility>
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::swap;
+using std::endl;
 
-const int ARRAY_SIZE = 1000;
+const int ARRAY_SIZE = 10;
 
-void swap(int& a, int &b)
-{
-	int temp = a;
-	a = b;
-	b = temp;
-}
-int mainMenu();
-void fillArray(int* , int );
-void printArray(int* , int );
+int mainMenu();				   //menu selection to choose the required algorithms
+void fillArray(int* , int );   //fills the given array with random numbers
+void printArray(int* , int );  //print the given array
 void BubbleSort(int* ,int );
-void QuickSort(int* , int ,int );
+void QuickSort(int* ,const int ,const int );
 int LinarySearch(int* ,int ,int );
-int BinarySearch(int* ,int, int);
+int BinarySearch(int* ,int, int );
 void HanoiTower(int ,char ,char ,char );
+int partition(int*,const int,const int);  //part of the quick sort algorithm
 
 int main()
 {
@@ -33,18 +31,19 @@ int main()
 		clock_t start, end;
 		int testList[ARRAY_SIZE];
 		int choice = mainMenu();
+		int key , answer;         //key to search for in binary & linary algorithms, answer = position of the key
 		switch (choice)
 		{
 		case 1:
 			//BubbleSort();
-			system("cls");
+			system("cls");						//windows command to clear the screen
 			fillArray(testList, ARRAY_SIZE);
 			//printArray(testList, ARRAY_SIZE);
 			start = clock();
 			BubbleSort(testList, ARRAY_SIZE);
 			end = clock();
 			//printArray(testList, ARRAY_SIZE);
-			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;
+			cout << "Time: " << (end - start) / (double)CLOCKS_PER_SEC;   //shows the CPU time spend for the algorithm in seconds
 			cin.get();
 			cin.get();
 			break;
@@ -52,55 +51,55 @@ int main()
 			//QuickSort();
 			system("cls");
 			fillArray(testList, ARRAY_SIZE);
-			//printArray(testList, ARRAY_SIZE);
+			printArray(testList, ARRAY_SIZE);
 			start = clock();
 			QuickSort(testList, 0, ARRAY_SIZE - 1);
 			end = clock();
-			cout << endl << "The list has been sorted, now it is : " << endl;
-			//printArray(testList, ARRAY_SIZE);
+			cout <<"\nThe list has been sorted, now it is : \n" ;
+			printArray(testList, ARRAY_SIZE);
 			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
 			cin.get();
 			cin.get();
 			break;
 		case 3:
 			//LinarySearch();
-			int key, answer;
 			fillArray(testList, ARRAY_SIZE);
+			srand((unsigned int)time(0));
+			key = testList[ (rand() % ARRAY_SIZE) ];		//random generated key
+			BubbleSort(testList, ARRAY_SIZE);						//sorts the array before searching
 			//printArray(testList, ARRAY_SIZE);
-			srand(time(0));
-			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
-			BubbleSort(testList, ARRAY_SIZE);
 			start = clock();
 			answer = LinarySearch(testList, ARRAY_SIZE, key);
 			end = clock();
-			/*if (answer == 0)
+			if (answer == -1)
 				cout << " Element is not found in an array\n";
 			else
-				cout << " Element is found at position " << (answer + 1) << endl;*/
+				cout << " Element " <<key<<" is found at position " << (answer + 1) << endl;
 			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
 			cin.get();
 			cin.get();
 			break;
 		case 4:
 			//BinarySearch();
-			int key, answer;
 			fillArray(testList, ARRAY_SIZE);
+			srand((unsigned int)time(0));
+			key = testList[ (rand() % ARRAY_SIZE) ];		//random generated key
+			BubbleSort(testList, ARRAY_SIZE);						//sorts the array before searching
 			//printArray(testList, ARRAY_SIZE);
-			srand(time(0));
-			key = testList[ rand() % (ARRAY_SIZE + (ARRAY_SIZE / 10)) ];
-			BubbleSort(testList, ARRAY_SIZE);
 			start = clock();
-			answer = BinarySearch(testList, key, ARRAY_SIZE);
+			answer = BinarySearch(testList, ARRAY_SIZE ,key);
+			cout << answer << "***";
 			end = clock();
-			/*if (answer == 0)
-			cout << " Element is not found in an array\n";
+			if (answer == -1)
+			cout << " Element " << key << " is not found in an array\n";
 			else
-			cout << " Element is found at position " << (answer + 1) << endl;*/
+			cout << " Element "<<key<<" is found at position " << (answer + 1) << endl;
 			cout << "Time : " << (end - start) / (double)CLOCKS_PER_SEC;
 			cin.get();
 			cin.get();
 			break;
 		case 5:
+			//HanoiTower();
 			system("cls");
 			int num;
 			cout << "Enter the number of disks : ";
@@ -120,7 +119,6 @@ int main()
 		}
 	} while (true);
 }
-
 int mainMenu()
 {
 	system("cls");
@@ -155,13 +153,39 @@ void printArray(int* array, int size)
 	for (int i = 0;i < size;i++)
 		cout << array[i] << endl;
 }
+int partition(int* array,const int low,const int high)
+{
+	const int mid = low + (high - low) / 2;
+	const int pivot = array[mid];
+
+	swap( array[mid] , array[low] );
+	int i = (low + 1);
+	int j = high;
+	while (i <= j)
+	{
+		while (i <= j && array[i] <= pivot)
+		{
+			i++;
+		}
+		while (i <= j && array[j] > pivot)
+		{
+			j--;
+		}
+		if (i < j)
+		{
+			swap(array[i], array[j]);
+		}
+	}
+	swap(array[i - 1], array[low]);
+	return i - 1;
+}
 void BubbleSort(int* array, int size)
 {
 	for (int i = 0; i < size ;i++)       
 	{
 		for (int j = 0; j < size - 1;j++)
 		{
-			if (array[j + 1]>array[j])
+			if (array[j + 1]<array[j])
 			{
 				int temp = array[j];
 				array[j] = array[j + 1];
@@ -170,18 +194,16 @@ void BubbleSort(int* array, int size)
 		}
 	}
 }
-/*void QuickSort(int* array, int startIndex, int endIndex)
+void QuickSort(int* array,const int low,const int high)
 {
-	int pivot = array[startIndex];
-	int splitPoint;
-	if (endIndex > startIndex)
+	if (low >= high)
 	{
-		splitPoint = SplitArray(array, pivot, startIndex, endIndex);
-		array[splitPoint] = pivot;
-		QuickSort(array, startIndex, splitPoint - 1);
-		QuickSort(array, splitPoint + 1, endIndex);
+		return;
 	}
-}*/
+		int splitPoint = partition(array, low, high);
+		QuickSort(array, low, splitPoint - 1);
+		QuickSort(array, splitPoint + 1, high);
+}
 int LinarySearch(int* array,int size,int key) 
 {
 	short flag;
@@ -201,12 +223,12 @@ int LinarySearch(int* array,int size,int key)
 		return i;
 	}
 }
-int BinarySearch(int* array, int key, int size)
+int BinarySearch(int* array, int size, int key)
 {
 	int low = 0, mid, high = size-1;
 	while (low <= high)
 	{
-		mid = (low + high) / 2;
+		mid = (low + (high - low)) / 2;
 		if (key == array[mid])
 			return mid;
 		else if (key < array[mid])
