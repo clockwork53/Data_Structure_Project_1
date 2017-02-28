@@ -153,10 +153,10 @@ void printArray(int* array, int size)
 	for (int i = 0;i < size;i++)
 		cout << array[i] << endl;
 }
-int partition(int* array,const int low,const int high)
+int partition(int* array, int low, int high)
 {
-	const int mid = low + (high - low) / 2;
-	const int pivot = array[mid];
+	int mid = low + (high - low) / 2;
+	int pivot = array[mid];
 
 	swap( array[mid] , array[low] );
 	int i = (low + 1);
@@ -194,16 +194,15 @@ void BubbleSort(int* array, int size)
 		}
 	}
 }
-void QuickSort(int* array,const int low,const int high)
+void QuickSort(int* array, int low, int high)
 {
-	if (low >= high)
+	if (low < high)
 	{
-		return;
-	}
 		int splitPoint = partition(array, low, high);
 		QuickSort(array, low, splitPoint - 1);
 		QuickSort(array, splitPoint + 1, high);
-}
+	}
+	}
 int LinarySearch(int* array,int size,int key) 
 {
 	short flag;
