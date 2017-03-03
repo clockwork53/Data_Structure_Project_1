@@ -3,8 +3,6 @@
 #include "stdafx.h"
 #include <iostream>
 #include <time.h>
-#include <iomanip>
-#include <Windows.h>
 #include <utility>
 #include <fstream>
 #include <string>
@@ -13,7 +11,6 @@ using std::cout;
 using std::cin;
 using std::swap;
 using std::endl;
-using std::ifstream;
 using std::ofstream;
 using std::string;
 using std::ios;
@@ -341,8 +338,8 @@ void HanoiTower(int num, char from_peg, char to_peg, char aux_peg ,short Verbose
 			cout << " Move disk 1 from peg " << from_peg << " to peg " << to_peg << endl;
 		return;
 	}
-	HanoiTower(num - 1, from_peg, aux_peg, to_peg ,NULL);
+	HanoiTower(num - 1, from_peg, aux_peg, to_peg ,Verbose);
 	if(Verbose)
 		cout << " Move disk " << num << " from peg " << from_peg << " to peg " << to_peg << endl;
-	HanoiTower(num - 1, aux_peg, to_peg, from_peg ,NULL);
+	HanoiTower(num - 1, aux_peg, to_peg, from_peg ,Verbose);
 }
