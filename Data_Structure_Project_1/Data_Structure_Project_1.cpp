@@ -15,7 +15,6 @@ using std::endl;
 using std::ofstream;
 using std::string;
 using std::ios;
-using std::uint64_t;
 
 short mainMenu();				   //menu selection to choose the required algorithms
 long int fetchArraySize();			//fetch array size from user
