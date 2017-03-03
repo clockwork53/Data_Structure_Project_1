@@ -197,6 +197,7 @@ short verboseSwitch()
 }
 void saveResults(string algorithm, double time, long int size, long int range)
 {
+	static bool oneTimeFormatting = true;										//checks if this is the first run
 		char holder;
 	do
 	{
@@ -206,17 +207,26 @@ void saveResults(string algorithm, double time, long int size, long int range)
 	} while (holder != 'y' && holder != 'n' && holder != 'N' && holder != 'Y');
 	if (holder == 'y' || holder == 'Y')
 	{
-		ofstream results;
-		results.open("Results.txt", ios::out | ios::app );
-		if (results.is_open())
+		ofstream* results = new ofstream;
+		if (oneTimeFormatting)
+			results->open("Results.txt", ios::out | ios::trunc);					//deletes the last result file(if exists)
+		else
+			results->open("Results.txt", ios::out | ios::app );					//append the new data without deleting the rest
+		if (results->is_open())
 		{
-			results << "\n\t" << algorithm << "\t" << time << " Seconds\t" << size << " Items\t" << "Range: ";
+			if (oneTimeFormatting)
+			{
+				*results << "Algorithm" << "\tTime (Seconds)" << "\tSize" << "\t\tRange";
+				oneTimeFormatting = false;
+			}
+			*results << "\n" << algorithm << "\t" << time << "\t\t" << size << "\t\t";
 			if (range != NULL)
-				results << range;
+				*results << range;
 			else
-				results << "N/A";
-			if (results.bad())
+				*results << "N/A";
+			if (results->bad())
 				cout << "\nSorry for the inconvience but we couldnt save the results! If this happends again contact support";
+			delete results;
 		}
 		else
 			cout << "\nCouldnt create a file! check permissions";
