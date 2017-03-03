@@ -6,6 +6,7 @@
 #include <utility>
 #include <fstream>
 #include <string>
+#include <cstdint>
 
 using std::cout;
 using std::cin;
@@ -14,27 +15,28 @@ using std::endl;
 using std::ofstream;
 using std::string;
 using std::ios;
+using std::uint64_t;
 
-int mainMenu();				   //menu selection to choose the required algorithms
-int fetchArraySize();			//fetch array size from user
-int fetchRange();				//fetch the range of random numbers from the user
+short mainMenu();				   //menu selection to choose the required algorithms
+long int fetchArraySize();			//fetch array size from user
+long int fetchRange();				//fetch the range of random numbers from the user
 short verboseSwitch();			//asks user whether to show the sorting_list/hanoi_instructions/searching_list
 void saveResults(string, double, long int, long int);
 void fillArray(long int* , long int , long int);			//fills the given array with random numbers
 void printArray(long int* , long int ,short);		 //print the given array (the short argument acts as an on/off switch)
 void BubbleSort(long int* , long int );
 void QuickSort(long int* , long int , long int );
-int LinarySearch(long int* , long int , long int );
-int BinarySearch(long int* , long int, long int );
+long int LinarySearch(long int* , long int , long int );
+long int BinarySearch(long int* , long int, long int );
 void HanoiTower(int ,char ,char ,char ,short);	//the short argument acts as a silent switch
-int partition(long int*, long int, long int);					//part of the quick sort algorithm
+long int partition(long int*, long int, long int);					//part of the quick sort algorithm
 
 int main()
 {
 	do
 	{
 		clock_t start, end;
-		int choice = mainMenu();
+		short choice = mainMenu();
 		if (choice == 6)
 			return 0;									//exit the program
 		short V = verboseSwitch();						//the key to silent the program!
@@ -55,7 +57,7 @@ int main()
 				end = clock();
 				printArray(testList, ARRAY_SIZE ,V);
 				double time = (end - start) / (double)CLOCKS_PER_SEC;
-				cout << "Time: " << time;							//shows the CPU time spend for the algorithm in seconds
+				cout << "Time: " << time * 1000;							//shows the CPU time spend for the algorithm in seconds
 				saveResults("Bubble Sort" , time, ARRAY_SIZE, RANGE );
 				cin.get();
 				delete[] testList;							//delete array to avoid memory leaks
@@ -72,7 +74,7 @@ int main()
 				cout << "\nThe list has been sorted, now it is : \n";
 				printArray(testList, ARRAY_SIZE ,V);
 				double time = (end - start) / (double)CLOCKS_PER_SEC;
-				cout << "Time: " << time;							//shows the CPU time spend for the algorithm in seconds
+				cout << "Time: " << time * 1000;							//shows the CPU time spend for the algorithm in seconds
 				saveResults("Quick Sort", time, ARRAY_SIZE, RANGE);
 				cin.get();
 				delete[] testList;
@@ -94,7 +96,7 @@ int main()
 				else
 					cout << " Element " << key << " is found at position " << (answer + 1) << endl;
 				double time = (end - start) / (double)CLOCKS_PER_SEC;
-				cout << "Time: " << time;							//shows the CPU time spend for the algorithm in seconds
+				cout << "Time: " << time * 1000;							//shows the CPU time spend for the algorithm in seconds
 				saveResults("Linary Search", time, ARRAY_SIZE, RANGE);
 				cin.get();
 				delete[] testList;
@@ -116,7 +118,7 @@ int main()
 				else
 					cout << " Element " << key << " is found at position " << (answer + 1) << endl;
 				double time = (end - start) / (double)CLOCKS_PER_SEC;
-				cout << "Time: " << time;							//shows the CPU time spend for the algorithm in seconds
+				cout << "Time: " << time * 1000;							//shows the CPU time spend for the algorithm in seconds
 				saveResults("Binary Search", time, ARRAY_SIZE, RANGE);
 				cin.get();
 				delete[] testList;
@@ -135,16 +137,16 @@ int main()
 			HanoiTower(num, 'A', 'B', 'C' ,V);
 			end = clock();
 			double time = (end - start) / (double)CLOCKS_PER_SEC;
-			cout << "Time: " << time;							//shows the CPU time spend for the algorithm in seconds
+			cout << "Time: " << time * 1000;							//shows the CPU time spend for the algorithm in seconds
 			saveResults("Hanoi Tower", time, num,NULL);
 			cin.get();
 		}
 	} while (true);
 }
-int mainMenu()
+short mainMenu()
 {
 	system("cls");
-	int x;
+	short x;
 	cout << "/**************************************************************************************/";
 	cout << "\n\n\n\n\t\t\t1) BubbleSort";
 	cout << "\n\t\t\t2) QuickSort";
@@ -162,17 +164,17 @@ int mainMenu()
 	} while (x < 1 || x>6);
 	return x;
 }
-int fetchArraySize()
+long int fetchArraySize()
 {
-	int ARRAY_SIZE;
+	long int ARRAY_SIZE;
 	cout << "Enter the size of the array ...\n";
 	cin >> ARRAY_SIZE;
 	cin.get();
 	return ARRAY_SIZE;
 }
-int fetchRange()
+long int fetchRange()
 {
-	int Range;
+	long int Range;
 	cout << "Enter the Range of the numbers ...\n";
 	cin >> Range;
 	cin.get();
@@ -213,7 +215,7 @@ void saveResults(string algorithm, double time, long int size, long int range)
 		{
 			if (oneTimeFormatting)
 			{
-				*results << "Algorithm" << "\tTime (Seconds)" << "\tSize" << "\t\tRange";
+				*results << "Algorithm" << "\tTime (Mili Seconds)" << "\tSize" << "\t\tRange";
 				oneTimeFormatting = false;
 			}
 			*results << "\n" << algorithm << "\t" << time << "\t\t" << size << "\t\t";
@@ -246,10 +248,10 @@ void printArray(long int* array, long int size ,short enable)
 	for (long int i = 0;i < size;i++)
 		cout << array[i] << endl;
 }
-int partition(long int* array, long int low, long int high)
+long int partition(long int* array, long int low, long int high)
 {
-	int mid = low + (high - low) / 2;
-	int pivot = array[mid];
+	long int mid = low + (high - low) / 2;
+	long int pivot = array[mid];
 
 	swap( array[mid] , array[low] );
 	long int i = (low + 1);
@@ -280,9 +282,10 @@ void BubbleSort(long int* array, long int size)
 		{
 			if (array[j + 1]<array[j])
 			{
-				int temp = array[j];
+				swap(array[j + 1], array[j]);
+				/*int temp = array[j];
 				array[j] = array[j + 1];
-				array[j + 1] = temp;
+				array[j + 1] = temp;*/
 			}
 		}
 	}
@@ -291,12 +294,12 @@ void QuickSort(long int* array, long int low, long int high)
 {
 	if (low < high)
 	{
-		int splitPoint = partition(array, low, high);
+		long int splitPoint = partition(array, low, high);
 		QuickSort(array, low, splitPoint - 1);
 		QuickSort(array, splitPoint + 1, high);
 	}
 	}
-int LinarySearch(long int* array, long int size, long int key)
+long int LinarySearch(long int* array, long int size, long int key)
 {
 	bool flag;
 	long int i;
@@ -315,7 +318,7 @@ int LinarySearch(long int* array, long int size, long int key)
 		return i;
 	}
 }
-int BinarySearch(long int* array, long int size, long int key)
+long int BinarySearch(long int* array, long int size, long int key)
 {
 	long int low = 0, mid, high = size-1;
 	while (low <= high)
